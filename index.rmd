@@ -1,0 +1,299 @@
+---
+title: 'Estadistica Descriptiva'
+author: "Carlos Iván Espinosa"
+date: "9 de julio de 2020"
+output:
+  html_document:
+    fig_caption: yes
+    highlight: haddock
+    number_sections: yes
+    theme: united
+    toc: yes
+    toc_float:
+      smooth_scroll: no
+  pdf_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+********
+__Nota:__ Puede descargar este ejercición haciendo clic [aquí]("https://github.com/Ciespinosa/Desciptivo-1/blob/master/index.pdf") 
+
+********
+
+# Descripción 
+
+El presente documento se encuentra dividido en dos partes. La primera parte es un caso de ejemplo que muestra los diferentes procedimientos para realizar un análisis estadístico descriptivo. La segunda parte es el ejercicio que deberá desarrollar como parte de la tarea.
+
+#Caso de ejemplo
+
+Para el caso de ejemplo usaremos datos del Ministerio de Salud Pública sobre los casos de amebiasis en la provincia de Loja. Cargaremos estos datos a R y realizaremos un estudio descriptivo. Con el fin del ejercicio vamos a realizar una descripción general de todos los datos y los evaluaremos separadamente entre hombres y mujeres.
+
+##Paso 1: cargamos los datos desde la web
+
+Vamos a cargar los datos desde la web, para esto usaremos la función `read.csv()`esta función nos permitirá leer los datos directamente desde el repositorio web (Github). Otra forma es descargar los datos [aquí]("https://github.com/Ciespinosa/datos_practicas/blob/master/AMEBIASIS_LOJA.xlsx"). Haga clic en _View raw_ y descargue los datos. Una vez descargados guárdelo en la carpeta y puede usar la función `read_excel()` del paquete __`readxl`__. 
+
+```{r cars, warning=FALSE}
+
+#Desde la web
+
+amebW <- read.csv("https://github.com/Ciespinosa/datos_practicas/blob/master/AMEBIASIS_LOJA.csv")
+
+##desde su computador
+# install.packages("readxl") #Este código solo debe correrlo la primera vez si no 
+                             #ha sido corrido antes. Para ejecutar borre el # del principio
+
+library(readxl)
+ameb <- read_excel("AMEBIASIS_LOJA.xlsx") 
+
+```
+
+Para poder asegurar que nuestras matrices están bien vamos a revisar los datos. Usaremos la función `str()`, esta función nos permite ver cuáles son las características de las variables. Por ejemplo, _Canton_ es un caracter "chr" y _Edad_ es numérico "num"
+
+```{r}
+str(ameb)
+
+```
+
+Como podemos ver nuestra matriz tiene variables cualitativas nominales (canton, parroquia, sexo) y cuantitativas discretas (número de consultas, Edad). Vamos a generar una par de variables que nos permitan tener un mayor tipo de variables.
+
+Vamos a generar una variable cualitativa nominal con los datos de edad, generaremos una escala de edad de joven hasta adulto. Usaremos la función `cut()`, esta función nos permite cortar un vector numérico y convertirlo en caracteres ordinales. Primero veremos los valores máximo y mínimo de edad para realizar los cortes, usaremos las funciones `min() y max()` que devuelven el valor máximo y mínimo. 
+
+>Nota: es mejor que la tabla de datos no tenga caracteres latinos como la tilde o ñ. R y muchos otros softwares suele tener problemas con estos caracteres. En la generación de las variables evitaremos poner tildes. 
+
+```{r}
+min(ameb$`Edad en años`); max(ameb$`Edad en años`) # el punto y coma ";" nos permite poner en
+                                                   # la misma línea de código dos órdenes
+ameb$C.edad <- cut(ameb$`Edad en años`, breaks=c(-0.1, 16, 25, 40,60, 117),
+                   labels = c("infantes", "jovenes", "adultos", "maduros", "adultos mayores"))
+
+```
+
+Para terminar, puesto que no tenemos variables continuas generaremos una variable de temperatura y la incluiremos en nuestra matriz. Usaremos la función `rnorm()`para generar una variable de temperatura de media 38 y desviación de 2.5.
+
+```{r}
+ameb$temp <- rnorm(nrow(ameb), 38, 2.5)
+```
+
+Muy bien ahora tenemos los datos listos para poder realizar un análisis descriptivo de nuestros datos.
+
+##Paso 2: Análisis descriptivo
+
+###Variables nominales
+
+Las variables nominales normalmente sirven para separar grupos, estas variables al no tener orden no son factibles de realizar un análisis numérico. Lo que podemos hacer con estas variables es graficar con el fin de comprender por ejemplo la frecuencia de cada carácter o la proporción de cada carácter.
+
+Usaremos los datos de cantón con el fin de evaluar la frecuencia de los casos por cantón. Usaremos la función `table()` que nos permite transformar los caracteres en una tabla de frecuencias y la función `prop.table()` para transformar los datos de la tabla a proporciones.
+
+```{r}
+canT <- table(ameb$Cantón)
+canPT <- prop.table(canT)
+
+canT; canPT
+```
+
+Aunque podemos ver como se distribuyen los datos entre los cantones no es del todo claro las diferencias entre los cantones. Haremos una gráfica de barras que nos permita destacar las diferencias. Si te interesa conocer profundizar algo más en las gráficas en R puedes ir al [enlace]("https://ciespinosa.github.io/Graficando/").
+
+```{r}
+
+par(mfcol=c(2,1), mar=c(2,3,1,1), oma=c(4,1,1,1))
+barplot(canT, col="black", names=FALSE, las=2, cex.axis = 0.7)
+barplot(canPT, col="black", cex.names=0.7, las =2)
+```
+
+Vemos que en el cantón Loja hay más casos de Amebiasis, sin embargo, hay que tomar estos datos con cuidado, ya que este cantón es el más poblado. En todo caso podemos ahora ver como se reparten nuestros casos en la Provincia de Loja
+
+
+###Variables ordinales
+
+Las variables ordinales son caracteres que presentan orden, así en nuestro ejemplo las personas _adultas_ tienen mayor edad que los _jovenes_ aunque no sepamos en que magnitud. Con el fin de describir estas variables usaremos medidas de posición, como son los cuantiles en sus distintas versiones, y como medida de dispersión al recorrido intercuartílico.
+
+Para poder usar análisis numéricos de las variables ordinales, debemos estar seguros que estas son categorías y que están ordenadas de forma correcta. Podemos preguntar a R el tipo de vector que tenemos usando la función `class()`, el orden podemos verlo usando la función `levels`. Si nuestros datos no son factores podemos convertirlos en factores con la función `factors`. Veamos nuestros datos.
+
+```{r}
+class(ameb$C.edad) #En nuestro caso es un factor
+
+levels(ameb$C.edad) #En nuestro caso el orden es correcto.
+
+```
+
+Ahora, con el fin de que ustedes puedan realizar el la conversión de los datos, si nos son factores, voy a pedirle a R que transforme a caracteres y luego transformar en factor.
+
+```{r}
+ameb$C.edad <- as.character(ameb$C.edad)#convertimos en carácter
+class(ameb$C.edad) #ahora ya no es un factor
+
+ameb$C.edad <- factor(ameb$C.edad)#lo reconvertimos en factor
+levels(ameb$C.edad) #Comprobamos el orden. En este caso no está en el orden que queremos
+
+##cambiamos el orden
+ameb$C.edad <- factor(ameb$C.edad, 
+                      levels = c("infantes", "jovenes", "adultos", "maduros", "adultos mayores") )
+levels(ameb$C.edad) #ahora el orden es correcto
+
+```
+
+Una vez que tenemos listos los datos podemos calcular los cuantiles de nuestra variable y el recorrido intercuartílico. Para calcular los cuantiles usaremos la función `quantile()`, esta función necesita valores numéricos, como tenemos factores podemos convertir los factores en números con la función `as.numeric()`. 
+
+```{r}
+quantile(as.numeric(ameb$C.edad))
+
+```
+
+Usamos los cuantiles como una medida de posición, así los resultados nos muestran que la mediana de nuestra variable ordinal se encuentra en la categoría de edad 2 (_jovenes_). Ahora nos interesa calcular el recorrido intercuatílico y recorrido intercuatílico relativo como medida de dispersión, definido como el cociente entre la diferencia de los cuartiles tercero y primero, y dividido para la mediana el Q2 en el caso del relativo.
+
+$$
+RI = Q3-Q1
+$$
+
+$$
+RIR = \frac{Q3-Q1}{Mediana}
+$$
+
+
+```{r}
+RI <- quantile(as.numeric(ameb$C.edad), 0.75) - quantile(as.numeric(ameb$C.edad), 0.25)
+
+RIR <- (quantile(as.numeric(ameb$C.edad), 0.75)- quantile(as.numeric(ameb$C.edad), 0.25))/quantile(as.numeric(ameb$C.edad), 0.50)
+```
+
+Estas medidas nos permiten conocer que tan dispersos están nuestros datos. Valores más altos de RI o de RIR muestran una mayor dispersión.
+
+
+Podemos graficar esta variable usando la misma función de antes `barplot()`.
+
+```{r}
+barplot(table(ameb$C.edad), col= terrain.colors(5), border=FALSE)
+```
+
+###Variables numéricas
+
+En el caso de las variables numéricas sean estas continuas o discretas usaremos las medidas de tendencia central más usadas como la media y moda, y medidas de dispersión como la desviación estándar y la varianza. Usaremos las funciones `mean()` y `sd()` que miden la media y la desviación estándar de una variable.
+
+```{r}
+mediaE <- mean(ameb$`Edad en años`)
+modaE <- as.numeric(names(which.max(table(ameb$`Edad en años`))))
+mediaT <- mean(ameb$temp)
+
+
+mediaE; mediaT; modaE
+
+```
+
+La media de edad es de 27.6 años y la de temperatura es de 38.5 °C. 
+
+```{r}
+
+sdE <- sd(ameb$`Edad en años`)
+sdT <- sd(ameb$temp)
+
+sdE; sdT
+```
+
+La desviación estándar es de 21.3 años y el de temperatura es de 2.5 °C.
+
+Ahora podemos graficar las variables. Podemos ver el tipo de distribución de los datos usando la función `hist()` y además la función `density()` para graficar una curva.
+
+```{r}
+
+par(mfcol=c(1,2))
+hist(ameb$`Edad en años`, col="black", density = 20, xlab="Edad", main="")
+abline(v=modaE, col="darkred", lwd=1.5)
+abline(v=mediaE, lwd=1.5)
+text(mediaE, 800, "Media", pos = 4, cex = 0.7)
+text(modaE, 750, "Moda", pos = 4, cex = 0.7)
+
+hist(ameb$temp, prob = TRUE, col = topo.colors(15), main="", xlab="Temperatura", ylim=c(0,0.17))
+lines(density(ameb$temp), lwd=2)
+abline(v=mediaT, lwd=2, col="darkred")
+text(mediaT, 0.15, "Media", pos=4, cex=0.7)
+
+
+```
+
+Como podemos ver muchas veces en las variables discretas la media no es el mejor valor de centralidad, el problema que tenemos es que las variables discretas normalmente no responden a una distribución de campana ( _distribución normal_ ) por lo que es mejor usar una medida como la moda.
+
+Finalmente, podemos graficar la variable como un grafico de cajas y bigotes (boxplot) para ello usaremos la función `boxplot()`, esta gráfica nos ayuda a ver la distribución de los datos, nos marca los cuantiles y los puntos que están como outlayers (datos extremos dentro de mi variable)
+
+
+```{r}
+
+par(mfcol=c(1,2))
+boxplot(ameb$`Edad en años`)
+boxplot(ameb$temp)
+
+```
+
+Como podemos ver en estas gráficas, nuestra variable discreta no es uniforme, tenemos más datos en edades menores de 20 años. En el caso de la temperatura vemos que es una variable muy simétrica, el tamaño de las cajas y los bigotes es bastante parecido por arriba y abajo de la mediana (línea negra en el centro de la caja).
+
+##Paso 3: Comparando las medidas descriptivas.
+
+En este punto queremos comparar los parámetros descriptivos que calculamos pero esta vez dividiremos los datos entre hombres y mujeres. Usaremos la función `subset()` para dividir los datos entre hombres y mujeres.
+
+```{r}
+amebH <- subset(ameb, ameb$Sexo=="Hombre")
+amebM <- subset(ameb, ameb$Sexo=="Mujer")
+```
+
+####Medidas de tendencia central
+
+Vamos a calcular las medidas de tendencia central de las variables; categóricas ordinales, numéricas discretas y continuas.
+
+```{r}
+quH <- quantile(as.numeric(amebH$C.edad))
+quM <- quantile(as.numeric(amebM$C.edad))
+quH[3] #mediana de hombres
+quM[3] #mediana de mujeres
+
+```
+Vemos que la mediana de hombres y mujeres es ligeramente distinto, mientras que para hombres la mediana está en los jóvenes, en el caso de las mujeres la mediana está en los adultos.
+
+Ahora calculemos las medidas para las variables numéricas. La moda para los años y la media para la temperatura.
+
+```{r}
+as.numeric(names(which.max(table(amebH$`Edad en años`)))); as.numeric(names(which.max(table(amebM$`Edad en años`))))
+
+mean(amebH$temp); mean(amebM$temp)
+```
+
+Como podemos ver los datos de es diferente entre los dos grupos, la moda en las mujeres es 5 años, mientras que en los hombres es 3 años. La temperatura no difiere entre los dos grupos.
+
+Finalmente, usaremos el diagrama de cajas para poder observar las diferencias en la dispersión entre la edad de los dos grupos de personas.
+
+```{r}
+
+sd(amebH$`Edad en años`)
+sd(amebM$`Edad en años`)
+
+boxplot(ameb$`Edad en años`~ameb$Sexo)
+```
+
+Como vemos la desviación estandar es 1 año mayor en hombres que en las mujeres, eso significa que este grupo muestra una mayor dispersión. Además vemos que en el caso de las mujeres la distribución es un tanto más simétrica.
+
+
+#Ejercicio
+
+A continuación espero que realicen una evaluación de las características de las variables de datos de un estudio sobre cirrosis hepática (Counting Processes and Survival Analysis by T. Fleming & D. Harrington, (1991). Estudio sobre cirrocis biliar primaria (PBC), published by John Wiley & Sons.). Pueden descargar el archivo de Excel haciendo clic [aquí]("https://github.com/Ciespinosa/datos_practicas/blob/master/tabla_cirrosis.xls")
+
+Descargue la tabla, revise la hoja dos donde se encuentran los metadatos de las variables, una explicación de que se refieren las variables que se encuentran en la tabla.
+
+Una vez este claras cada una de las variables vamos a realizar un análisis de algunas de ellas y las vamos a comparar entre tratamientos. Las variables que analizaremos son; fase, colesterol, albumina y triglicéridos.
+
+Desarrollar las siguientes partes:
+
+1. Las variables cualitativas ordinales obtener la mediana y el Rango Intercuartílico para el tratamiento y placebo. ¿Hay diferencia en la mediana y el rango entre los dos tratamientos, que significa eso?
+
+2. Realizar un gráfico de barras para cada tratamiento con los datos de la variable ordinal.
+
+3. Para las variables continuas. Calcular la media y la desviación estándar para cada tratamiento. ¿Existen diferencias entre tratamientos? ¿Cómo puede interpretar esta información?.
+
+4. Realice un histograma y una línea con la densidad que permita ver la distribución de los datos para cada tratamiento. Incluya la media en cada gráfica. 
+
+5. Realice un gráfico de cajas para analizar las diferencias entre cada tratamiento.
+
+
+ 
+
