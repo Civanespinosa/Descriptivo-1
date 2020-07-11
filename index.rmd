@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ********
-__Nota:__ Puede descargar este ejercición haciendo clic [aquí]("https://github.com/Civanespinosa/Descriptivo-1/blob/master/trabajo1_descriptiva.pdf") 
+__Nota:__ Puede descargar este ejercición haciendo clic [aquí](https://github.com/Civanespinosa/Descriptivo-1/blob/master/trabajo1_descriptiva.pdf) 
 
 ********
 
