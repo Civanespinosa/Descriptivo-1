@@ -1,5 +1,5 @@
 ---
-title: 'Estadistica Descriptiva'
+title: 'Estadística Descriptiva'
 author:
 - name: "Carlos Iván Espinosa"
   affiliation:
@@ -7,8 +7,6 @@ author:
   email: ciespinosa@utpl.edu.ec
 date: "9 de julio de 2020"
 output:
-  pdf_document:
-    toc: yes
   html_document:
     fig_caption: yes
     highlight: haddock
@@ -17,6 +15,8 @@ output:
     toc: yes
     toc_float:
       smooth_scroll: no
+  pdf_document:
+    toc: yes
 ---
 
 ```{r setup, include=FALSE}
@@ -25,7 +25,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 
-Para regresar a Introducción R [![button](push1.png)](https://ciespinosa.github.io/Exploratorio)
+Para regresar a Exploratorio R [![button](push1.png)](https://ciespinosa.github.io/Exploratorio)
 
 --------
 
