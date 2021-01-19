@@ -12,7 +12,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ********
-__Nota:__ Puede descargar este ejercición haciendo clic [aquí]("https://github.com/Ciespinosa/Desciptivo-1/blob/master/trabajo 1_descriptiva.pdf") 
+__Nota:__ Puede descargar este ejercición haciendo clic [aquí](https://github.com/Ciespinosa/Desciptivo-1/blob/master/trabajo 1_descriptiva.pdf) 
 
 ********
 
@@ -26,7 +26,7 @@ Para el caso de ejemplo usaremos datos del Ministerio de Salud Pública sobre lo
 
 ##Paso 1: cargamos los datos desde la web
 
-Vamos a cargar los datos desde la web, para esto usaremos la función `read.csv()`esta función nos permitirá leer los datos directamente desde el repositorio web (Github). Otra forma es descargar los datos [aquí]("https://github.com/Ciespinosa/datos_practicas/blob/master/AMEBIASIS_LOJA.xlsx"). Haga clic en _View raw_ y descargue los datos. Una vez descargados guárdelo en la carpeta y puede usar la función `read_excel()` del paquete __`readxl`__. 
+Vamos a cargar los datos desde la web, para esto usaremos la función `read.csv()`esta función nos permitirá leer los datos directamente desde el repositorio web (Github). Otra forma es descargar los datos [aquí](https://github.com/Ciespinosa/datos_practicas/blob/master/AMEBIASIS_LOJA.xlsx). Haga clic en _View raw_ y descargue los datos. Una vez descargados guárdelo en la carpeta y puede usar la función `read_excel()` del paquete __`readxl`__. 
 
 ```{r cars, warning=FALSE}
 
@@ -87,7 +87,7 @@ canPT <- prop.table(canT)
 canT; canPT
 ```
 
-Aunque podemos ver como se distribuyen los datos entre los cantones no es del todo claro las diferencias entre los cantones. Haremos una gráfica de barras que nos permita destacar las diferencias. Si te interesa conocer profundizar algo más en las gráficas en R puedes ir al [enlace]("https://ciespinosa.github.io/Graficando/").
+Aunque podemos ver como se distribuyen los datos entre los cantones no es del todo claro las diferencias entre los cantones. Haremos una gráfica de barras que nos permita destacar las diferencias. Si te interesa conocer profundizar algo más en las gráficas en R puedes ir al [enlace](https://ciespinosa.github.io/Graficando/).
 
 ```{r}
 
@@ -268,7 +268,7 @@ Como vemos la desviación estandar es 1 año mayor en hombres que en las mujeres
 
 #Ejercicio
 
-A continuación espero que realicen una evaluación de las características de las variables de datos de un estudio sobre cirrosis hepática (Counting Processes and Survival Analysis by T. Fleming & D. Harrington, (1991). Estudio sobre cirrocis biliar primaria (PBC), published by John Wiley & Sons.). Pueden descargar el archivo de Excel haciendo clic [aquí]("https://github.com/Ciespinosa/datos_practicas/blob/master/tabla_cirrosis.xls")
+A continuación espero que realicen una evaluación de las características de las variables de datos de un estudio sobre cirrosis hepática (Counting Processes and Survival Analysis by T. Fleming & D. Harrington, (1991). Estudio sobre cirrocis biliar primaria (PBC), published by John Wiley & Sons.). Pueden descargar el archivo de Excel haciendo clic [aquí](https://github.com/Ciespinosa/datos_practicas/blob/master/tabla_cirrosis.xls)
 
 Descargue la tabla, revise la hoja dos donde se encuentran los metadatos de las variables, una explicación de que se refieren las variables que se encuentran en la tabla.
 

@@ -1,8 +1,14 @@
 ---
 title: 'Estadistica Descriptiva'
-author: "Carlos Iván Espinosa"
+author:
+- name: "Carlos Iván Espinosa"
+  affiliation:
+    - Laboratorio de ecología y servicios ecosistémicos, Universidad Técnica Particular de Loja.
+  email: ciespinosa@utpl.edu.ec
 date: "9 de julio de 2020"
 output:
+  pdf_document:
+    toc: yes
   html_document:
     fig_caption: yes
     highlight: haddock
@@ -11,15 +17,18 @@ output:
     toc: yes
     toc_float:
       smooth_scroll: no
-  pdf_document:
-    toc: yes
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-********
+
+
+Para regresar a Introducción R [![button](push1.png)](https://ciespinosa.github.io/Exploratorio)
+
+--------
+
 __Nota:__ Puede descargar este ejercición haciendo clic [aquí](https://github.com/Civanespinosa/Descriptivo-1/blob/master/trabajo1_descriptiva.pdf) 
 
 ********
@@ -28,13 +37,13 @@ __Nota:__ Puede descargar este ejercición haciendo clic [aquí](https://github.
 
 El presente documento se encuentra dividido en dos partes. La primera parte es un caso de ejemplo que muestra los diferentes procedimientos para realizar un análisis estadístico descriptivo. La segunda parte es el ejercicio que deberá desarrollar como parte de la tarea.
 
-#Caso de ejemplo
+# Caso de ejemplo
 
 Para el caso de ejemplo usaremos datos del Ministerio de Salud Pública sobre los casos de amebiasis en la provincia de Loja. Cargaremos estos datos a R y realizaremos un estudio descriptivo. Con el fin del ejercicio vamos a realizar una descripción general de todos los datos y los evaluaremos separadamente entre hombres y mujeres.
 
-##Paso 1: cargamos los datos desde la web
+## Paso 1: cargamos los datos desde la web
 
-Vamos a cargar los datos desde la web, para esto usaremos la función `read.csv()`esta función nos permitirá leer los datos directamente desde el repositorio web (Github). Otra forma es descargar los datos [aquí]("https://github.com/Ciespinosa/datos_practicas/blob/master/AMEBIASIS_LOJA.xlsx"). Haga clic en _View raw_ y descargue los datos. Una vez descargados guárdelo en la carpeta y puede usar la función `read_excel()` del paquete __`readxl`__. 
+Vamos a cargar los datos desde la web, para esto usaremos la función `read.csv()`esta función nos permitirá leer los datos directamente desde el repositorio web (Github). Otra forma es descargar los datos [aquí](https://github.com/Ciespinosa/datos_practicas/blob/master/AMEBIASIS_LOJA.xlsx). Haga clic en _View raw_ y descargue los datos. Una vez descargados guárdelo en la carpeta y puede usar la función `read_excel()` del paquete __`readxl`__. 
 
 ```{r cars, warning=FALSE}
 
@@ -80,9 +89,9 @@ ameb$temp <- rnorm(nrow(ameb), 38, 2.5)
 
 Muy bien ahora tenemos los datos listos para poder realizar un análisis descriptivo de nuestros datos.
 
-##Paso 2: Análisis descriptivo
+## Paso 2: Análisis descriptivo
 
-###Variables nominales
+### Variables nominales
 
 Las variables nominales normalmente sirven para separar grupos, estas variables al no tener orden no son factibles de realizar un análisis numérico. Lo que podemos hacer con estas variables es graficar con el fin de comprender por ejemplo la frecuencia de cada carácter o la proporción de cada carácter.
 
@@ -95,7 +104,7 @@ canPT <- prop.table(canT)
 canT; canPT
 ```
 
-Aunque podemos ver como se distribuyen los datos entre los cantones no es del todo claro las diferencias entre los cantones. Haremos una gráfica de barras que nos permita destacar las diferencias. Si te interesa conocer profundizar algo más en las gráficas en R puedes ir al [enlace]("https://ciespinosa.github.io/Graficando/").
+Aunque podemos ver como se distribuyen los datos entre los cantones no es del todo claro las diferencias entre los cantones. Haremos una gráfica de barras que nos permita destacar las diferencias. Si te interesa conocer profundizar algo más en las gráficas en R puedes ir al [enlace](https://ciespinosa.github.io/Graficando/).
 
 ```{r}
 
@@ -107,7 +116,7 @@ barplot(canPT, col="black", cex.names=0.7, las =2)
 Vemos que en el cantón Loja hay más casos de Amebiasis, sin embargo, hay que tomar estos datos con cuidado, ya que este cantón es el más poblado. En todo caso podemos ahora ver como se reparten nuestros casos en la Provincia de Loja
 
 
-###Variables ordinales
+### Variables ordinales
 
 Las variables ordinales son caracteres que presentan orden, así en nuestro ejemplo las personas _adultas_ tienen mayor edad que los _jovenes_ aunque no sepamos en que magnitud. Con el fin de describir estas variables usaremos medidas de posición, como son los cuantiles en sus distintas versiones, y como medida de dispersión al recorrido intercuartílico.
 
@@ -169,7 +178,7 @@ Podemos graficar esta variable usando la misma función de antes `barplot()`.
 barplot(table(ameb$C.edad), col= terrain.colors(5), border=FALSE)
 ```
 
-###Variables numéricas
+### Variables numéricas
 
 En el caso de las variables numéricas sean estas continuas o discretas usaremos las medidas de tendencia central más usadas como la media y moda, y medidas de dispersión como la desviación estándar y la varianza. Usaremos las funciones `mean()` y `sd()` que miden la media y la desviación estándar de una variable.
 
@@ -229,7 +238,7 @@ boxplot(ameb$temp)
 
 Como podemos ver en estas gráficas, nuestra variable discreta no es uniforme, tenemos más datos en edades menores de 20 años. En el caso de la temperatura vemos que es una variable muy simétrica, el tamaño de las cajas y los bigotes es bastante parecido por arriba y abajo de la mediana (línea negra en el centro de la caja).
 
-##Paso 3: Comparando las medidas descriptivas.
+## Paso 3: Comparando las medidas descriptivas.
 
 En este punto queremos comparar los parámetros descriptivos que calculamos pero esta vez dividiremos los datos entre hombres y mujeres. Usaremos la función `subset()` para dividir los datos entre hombres y mujeres.
 
@@ -238,7 +247,7 @@ amebH <- subset(ameb, ameb$Sexo=="Hombre")
 amebM <- subset(ameb, ameb$Sexo=="Mujer")
 ```
 
-####Medidas de tendencia central
+#### Medidas de tendencia central
 
 Vamos a calcular las medidas de tendencia central de las variables; categóricas ordinales, numéricas discretas y continuas.
 
@@ -274,7 +283,7 @@ boxplot(ameb$`Edad en años`~ameb$Sexo)
 Como vemos la desviación estandar es 1 año mayor en hombres que en las mujeres, eso significa que este grupo muestra una mayor dispersión. Además vemos que en el caso de las mujeres la distribución es un tanto más simétrica.
 
 
-#Ejercicio
+# Ejercicio
 
 A continuación espero que realicen una evaluación de las características de las variables de datos de un estudio sobre cirrosis hepática (Counting Processes and Survival Analysis by T. Fleming & D. Harrington, (1991). Estudio sobre cirrocis biliar primaria (PBC), published by John Wiley & Sons.). Pueden descargar el archivo de Excel haciendo clic [aquí]("https://github.com/Ciespinosa/datos_practicas/blob/master/tabla_cirrosis.xls")
 
