@@ -5,7 +5,7 @@ author:
   affiliation:
     - Laboratorio de ecología y servicios ecosistémicos, Universidad Técnica Particular de Loja.
   email: ciespinosa@utpl.edu.ec
-date: "9 de julio de 2020"
+date: "19 de julio de 2021"
 output:
   pdf_document:
     toc: yes
@@ -49,7 +49,7 @@ Vamos a cargar los datos desde la web, para esto usaremos la función `read.csv(
 
 #Desde la web
 
-amebW <- read.csv("https://github.com/Ciespinosa/datos_practicas/blob/master/AMEBIASIS_LOJA.csv")
+amebW <- read.csv("https://raw.githubusercontent.com/Ciespinosa/datos_practicas/master/AMEBIASIS_LOJA.csv")
 
 ##desde su computador
 # install.packages("readxl") #Este código solo debe correrlo la primera vez si no 
